@@ -1,0 +1,67 @@
+﻿@model IEnumerable<VuQuangHuyMVC.Models.NewsArticle>
+
+@{
+	ViewData["Title"] = "News";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+	var role = Context.Session.GetString("Role");
+	var accounts = ViewBag.Accounts as List<VuQuangHuyMVC.Models.SystemAccount>; // Danh sách accounts để lấy AccountName
+}
+
+<h1 class="mb-4">History Created News</h1>
+
+<table class="table table-bordered table-hover">
+	<thead class="thead-dark">
+		<tr>
+			<th>@Html.DisplayNameFor(model => model.NewsTitle)</th>
+			<th>@Html.DisplayNameFor(model => model.Headline)</th>
+			<th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+			<th>@Html.DisplayNameFor(model => model.NewsSource)</th>
+			@if (role == "Staff")
+			{
+				<th>@Html.DisplayNameFor(model => model.NewsStatus)</th>
+				<th>@Html.DisplayNameFor(model => model.UpdatedById)</th>
+				<th>@Html.DisplayNameFor(model => model.ModifiedDate)</th>
+			}
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>@Html.DisplayFor(modelItem => item.NewsTitle)</td>
+				<td>@Html.DisplayFor(modelItem => item.Headline)</td>
+				<td>@(item.CreatedDate?.ToString("dd/MM/yyyy"))</td>
+				<td>@Html.DisplayFor(modelItem => item.NewsSource)</td>
+
+				@if (role == "Staff")
+				{
+					<!-- Cột NewsStatus -->
+					<td>
+						@if (item.NewsStatus == true)
+						{
+							<span class="badge bg-success text-white">Active</span>
+						}
+						else
+						{
+							<span class="badge bg-danger text-white">Inactive</span>
+						}
+					</td>
+
+
+					<!-- Cột UpdatedById hiển thị AccountName -->
+					<td>
+						@{
+							var updatedBy = accounts?.FirstOrDefault(a => a.AccountId == item.UpdatedById);
+						}
+						@(updatedBy?.AccountName ?? "Unknown")
+					</td>
+
+
+					<td>@item.ModifiedDate?.ToString("dd/MM/yyyy")</td>
+				}
+			</tr>
+		}
+	</tbody>
+</table>

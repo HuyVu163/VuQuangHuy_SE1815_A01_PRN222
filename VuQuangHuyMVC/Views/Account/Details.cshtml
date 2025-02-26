@@ -1,0 +1,46 @@
+﻿@model VuQuangHuyMVC.Models.SystemAccount
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var role = Context.Session.GetString("Role");
+}
+
+<h1>Details</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form>
+            <div class="form-group">
+                <label class="control-label">Account Name</label>
+                <input class="form-control" value="@Model.AccountName" readonly />
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Email</label>
+                <input class="form-control" value="@Model.AccountEmail" readonly />
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Role</label>
+                <input class="form-control" value="@Model.AccountRole" readonly />
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Password</label>
+                <input type="text" class="form-control" value="@Model.AccountPassword" readonly />
+            </div>
+
+            <div class="form-group mt-3">
+               
+                <div class="form-group mt-3">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fa fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+                    
+            </div>
+        </form>
+    </div>
+</div>

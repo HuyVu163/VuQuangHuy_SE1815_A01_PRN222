@@ -1,0 +1,106 @@
+﻿@model VuQuangHuyMVC.Models.NewsArticle
+
+@{
+	ViewData["Title"] = "Edit";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	// Lấy UserID của người chỉnh sửa từ Session (định nghĩa trong Controller)
+	var currentUserId = ViewBag.CurrentUserId ?? 0;
+
+	// Set ngày hôm nay làm ngày chỉnh sửa
+	var today = DateTime.Now.ToString("yyyy-MM-dd");
+}
+
+<h1>Edit News</h1>
+<hr />
+
+<div class="row">
+	<div class="col-md-6">
+		<form asp-action="Edit">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="NewsArticleId" />
+
+			<!-- News Title -->
+			<div class="form-group">
+				<label asp-for="NewsTitle" class="control-label"></label>
+				<input asp-for="NewsTitle" class="form-control" />
+				<span asp-validation-for="NewsTitle" class="text-danger"></span>
+			</div>
+
+			<!-- Headline -->
+			<div class="form-group">
+				<label asp-for="Headline" class="control-label"></label>
+				<input asp-for="Headline" class="form-control" />
+				<span asp-validation-for="Headline" class="text-danger"></span>
+			</div>
+
+			<!-- CreateDate -->
+			<div class="form-group">
+				<input type="hidden" asp-for="CreatedDate" class="form-control" />
+			</div>
+
+			<!-- News Content -->
+			<div class="form-group">
+				<label asp-for="NewsContent" class="control-label"></label>
+				<textarea asp-for="NewsContent" class="form-control" rows="5"></textarea>
+				<span asp-validation-for="NewsContent" class="text-danger"></span>
+			</div>
+
+			<!-- News Source -->
+			<div class="form-group">
+				<label asp-for="NewsSource" class="control-label"></label>
+				<input asp-for="NewsSource" class="form-control" />
+				<span asp-validation-for="NewsSource" class="text-danger"></span>
+			</div>
+
+			<!-- Category ID (Dropdown) -->
+			<div class="form-group">
+				<label asp-for="CategoryId" class="control-label"></label>
+				<select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select>
+				<span asp-validation-for="CategoryId" class="text-danger"></span>
+			</div>
+
+			<!-- News Status (Dropdown) -->
+			<div class="form-group">
+				<label asp-for="NewsStatus" class="control-label"></label>
+				<select asp-for="NewsStatus" class="form-control">
+					<option value="true" selected="@Model.NewsStatus">Active</option>
+					<option value="false" selected="@(!Model.NewsStatus)">Inactive</option>
+				</select>
+				<span asp-validation-for="NewsStatus" class="text-danger"></span>
+			</div>
+
+			<!-- CreatedById (Hiển thị tên người tạo, readonly) -->
+			<div class="form-group">
+				<label asp-for="CreatedById" class="control-label"></label>
+				<input name="CreatedByName" class="form-control" value="@(ViewBag.CreatedByName ?? "Unknown")" readonly />
+				<span asp-validation-for="CreatedById" class="text-danger"></span>
+			</div>
+
+			<!-- UpdatedById (Hiển thị tên người đang chỉnh sửa, readonly) -->
+			<div class="form-group">
+				<label asp-for="UpdatedById" class="control-label"></label>
+				<input name="UpdatedByName" class="form-control" value="@(ViewBag.UpdatedByName ?? "Unknown")" readonly />
+				<span asp-validation-for="UpdatedById" class="text-danger"></span>
+			</div>
+
+
+			<!-- ModifiedDate (Tự động lấy ngày hiện tại) -->
+			<div class="form-group">
+				<label asp-for="ModifiedDate" class="control-label"></label>
+				<input asp-for="ModifiedDate" class="form-control" type="date" value="@today" readonly />
+				<span asp-validation-for="ModifiedDate" class="text-danger"></span>
+			</div>
+
+			<!-- Save Button -->
+			<div class="form-group mt-3">
+				<button type="submit" class="btn btn-primary">
+					<i class="fa fa-save"></i> Save
+				</button>
+				<a asp-action="Index" class="btn btn-secondary">
+					<i class="fa fa-arrow-left"></i> Back to List
+				</a>
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,86 @@
+﻿@model VuQuangHuyMVC.Models.NewsArticle
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create News</h1>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- NewsArticleId (Chỉ hiển thị, không chỉnh sửa) -->
+            <div class="form-group" hidden>
+                <label asp-for="NewsArticleId" class="control-label"></label>
+                <input asp-for="NewsArticleId" class="form-control" value="@ViewBag.NextNewsArticleId" readonly />
+            </div>
+
+            <!-- News Title -->
+            <div class="form-group">
+                <label asp-for="NewsTitle" class="control-label"></label>
+                <input asp-for="NewsTitle" class="form-control" required />
+                <span asp-validation-for="NewsTitle" class="text-danger"></span>
+            </div>
+
+            <!-- Headline -->
+            <div class="form-group">
+                <label asp-for="Headline" class="control-label"></label>
+                <input asp-for="Headline" class="form-control" required />
+                <span asp-validation-for="Headline" class="text-danger"></span>
+            </div>
+
+            <!-- News Content -->
+            <div class="form-group">
+                <label asp-for="NewsContent" class="control-label"></label>
+                <textarea asp-for="NewsContent" class="form-control" rows="3" required></textarea>
+                <span asp-validation-for="NewsContent" class="text-danger"></span>
+            </div>
+
+            <!-- News Source -->
+            <div class="form-group">
+                <label asp-for="NewsSource" class="control-label"></label>
+                <input asp-for="NewsSource" class="form-control" />
+                <span asp-validation-for="NewsSource" class="text-danger"></span>
+            </div>
+
+            <!-- Category Selection -->
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories" required></select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <!-- News Status -->
+            <div class="form-group">
+                <label asp-for="NewsStatus" class="control-label"></label>
+                <select asp-for="NewsStatus" class="form-control">
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+                <span asp-validation-for="NewsStatus" class="text-danger"></span>
+            </div>
+
+            <!-- CreatedById & UpdatedById (Ẩn, lấy từ user đăng nhập) -->
+            <input type="hidden" asp-for="CreatedById" value="@ViewBag.CurrentUserId" />
+            <input type="hidden" asp-for="UpdatedById" value="@ViewBag.CurrentUserId" />
+
+            <!-- Nút Submit -->
+            <div class="form-group mt-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

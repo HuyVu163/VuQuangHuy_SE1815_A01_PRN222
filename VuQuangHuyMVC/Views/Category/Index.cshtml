@@ -1,0 +1,65 @@
+﻿@model IEnumerable<VuQuangHuyMVC.Models.Category>
+
+@{
+	ViewData["Title"] = "Category";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Category</h1>
+
+<p>
+	<a asp-action="Create" class="btn btn-primary">➕ Create New</a>
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.CategoryName)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.CategoryDesciption)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.IsActive)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.ParentCategory)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.CategoryName)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.CategoryDesciption)
+				</td>
+				<td>
+					@if (item.IsActive == true)
+					{
+						<span class="badge bg-success text-white">Active</span>
+					}
+					else
+					{
+						<span class="badge bg-danger text-white">Inactive</span>
+					}
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.ParentCategory.CategoryId)
+				</td>
+				<!-- Cột Actions -->
+				<td>
+					<div class="btn-group">
+						<a asp-action="Details" asp-route-id="@item.CategoryId" class="btn btn-info btn-sm">👁️ View</a>
+						<a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-warning btn-sm">✏️ Edit</a>
+						<a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-danger btn-sm">🗑️ Delete</a>
+					</div>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

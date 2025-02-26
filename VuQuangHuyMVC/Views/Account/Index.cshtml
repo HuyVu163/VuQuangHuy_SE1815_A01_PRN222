@@ -1,0 +1,249 @@
+﻿@model IEnumerable<VuQuangHuyMVC.Models.SystemAccount>
+
+@{
+    ViewData["Title"] = "List of Accounts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary">Account Management</h2>
+        <!-- Button mở popup -->
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createAccountModal">
+            <i class="fas fa-user-plus"></i> Create New
+        </button>
+
+    </div>
+
+    <div class="card shadow-lg rounded">
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th>Account Name</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.AccountName</td>
+                            <td>@item.AccountEmail</td>
+                            <td>@item.AccountPassword</td>
+                            <td>@item.AccountRole</td>
+                            <td>
+                                <a href="javascript:void(0);" class="btn btn-warning btn-sm"
+                                   onclick="openEditModal('@item.AccountId')">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+
+                                <a asp-action="Details" asp-route-id="@item.AccountId" class="btn btn-info btn-sm">
+                                    <i class="fas fa-eye"></i> Details
+                                </a>
+                                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="confirmDelete('@item.AccountId')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+
+                                <script>
+                                    function confirmDelete(accountId) {
+                                        if (confirm("Are you sure you want to delete this account?")) {
+                                            window.location.href = `/Account/Delete/${accountId}`;
+                                        }
+                                    }
+                                </script>
+
+
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Create Account -->
+<div class="modal fade" id="createAccountModal" tabindex="-1" aria-labelledby="createAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="createAccountModalLabel">Create New Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createAccountForm">
+                    <div class="mb-3">
+                        <label for="accountName" class="form-label">Account Name</label>
+                        <input type="text" class="form-control" id="accountName" name="AccountName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="accountEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="accountEmail" name="AccountEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="accountRole" class="form-label">Role</label>
+                        <select class="form-control" id="accountRole" name="AccountRole">
+                            <option value="0">User</option>
+                            <option value="1">Staff</option>
+                            <option value="2">Lecture</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="accountPassword" class="form-label">Account Password</label>
+                        <input type="text" class="form-control" id="accountPassword" name="AccountPassword" required>
+                    </div>
+                    <input type="hidden" id="accountId" name="accountId" required value="@ViewBag.NextAccountId">
+
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Save</button>
+                    </div>
+                </form>
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script>
+                    $(document).ready(function () {
+                        $("#createAccountForm").submit(function (event) {
+                            event.preventDefault();
+
+                            var formData = {
+                                AccountName: $("#accountName").val(),
+                                AccountEmail: $("#accountEmail").val(),
+                                AccountRole: $("#accountRole").val(),
+                                AccountId: $("#accountId").val(),
+                                AccountPassword: $("#accountPassword").val()
+                            };
+
+                            $.ajax({
+                                type: "POST",
+                                url: "/Account/Create",
+                                data: formData,
+                                success: function (response) {
+                                    if (response.success) {
+                                        alert(response.message || "Account created successfully!");
+                                        $("#createAccountModal").modal("hide"); // Đóng modal
+                                        location.reload(); // Refresh trang để cập nhật danh sách
+                                    } else {
+                                        alert(response.message || "Failed to create account.");
+                                    }
+                                },
+                                error: function () {
+                                    alert("An error occurred while processing the request.");
+                                }
+                            });
+                        });
+                    });
+                </script>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Account Modal -->
+<div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAccountModalLabel">Edit Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editAccountForm">
+                    <input type="hidden" id="editAccountId">
+
+                    <div class="mb-3">
+                        <label for="editAccountName" class="form-label">Account Name</label>
+                        <input type="text" class="form-control" id="editAccountName" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editAccountEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editAccountEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editAccountPassword" class="form-label">Account Password</label>
+                        <input type="text" class="form-control" id="editAccountPassword" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editAccountRole" class="form-label">Role</label>
+                        <select class="form-control" id="editAccountRole" required>
+                            <option value="0">User</option>
+                            <option value="1">Staff</option>
+                            <option value="2">Lecture</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+                <script>
+                    // 🟢 Hàm mở modal Edit và load dữ liệu tài khoản
+                    function openEditModal(accountId) {
+                        $.ajax({
+                            type: "GET",
+                            url: "/Account/GetById",
+                            data: { id: accountId },
+                            success: function (response) {
+                                if (response.success) {
+                                    $("#editAccountId").val(response.data.accountId);
+                                    $("#editAccountName").val(response.data.accountName);
+                                    $("#editAccountEmail").val(response.data.accountEmail);
+                                    $("#editAccountRole").val(response.data.accountRole);
+                                    $("#editAccountPassword").val(response.data.accountPassword);
+
+                                    $("#editAccountModal").modal("show");
+                                } else {
+                                    alert("Error loading account data.");
+                                }
+                            },
+                            error: function () {
+                                alert("Failed to fetch account data.");
+                            }
+                        });
+                    }
+
+                    // 🟢 Xử lý Submit Form Edit
+                    $("#editAccountForm").submit(function (event) {
+                        event.preventDefault();
+
+                        var formData = {
+                            AccountId: $("#editAccountId").val(),
+                            AccountName: $("#editAccountName").val(),
+                            AccountEmail: $("#editAccountEmail").val(),
+                            AccountRole: $("#editAccountRole").val(),
+                            AccountPassword: $("#editAccountPassword").val()
+                        };
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Account/Edit",
+                            data: formData,
+                            success: function (response) {
+                                if (response.success) {
+                                    alert("Account updated successfully!");
+                                    $("#editAccountModal").modal("hide");
+                                    location.reload();
+                                } else {
+                                    alert(response.message || "Failed to update account.");
+                                }
+                            },
+                            error: function () {
+                                alert("An error occurred while updating the account.");
+                            }
+                        });
+                    });
+                </script>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
