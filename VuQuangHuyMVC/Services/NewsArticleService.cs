@@ -50,9 +50,6 @@ namespace Services
 			return await _repository.GetReportByDateRange(startDate, endDate);
         }
 
-        public async Task UpdateNewsArticle(NewsArticle news)
-		{
-			await _repository.UpdateNewsArticle(news);
-		}
+        public async Task UpdateNewsArticle(NewsArticle news) => _repository.UpdateNewsArticle(news);
 	}
 }
